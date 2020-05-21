@@ -65,4 +65,4 @@ server:
 logging:
   file: log.txt
   level:
-    com.zdpower: debug
+    com.bfh.mdm: debug

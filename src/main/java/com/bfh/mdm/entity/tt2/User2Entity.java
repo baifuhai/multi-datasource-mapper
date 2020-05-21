@@ -32,6 +32,6 @@ public class User2Entity {
 	Integer id;
 
 	@TableField
-	String name;
+	String userName;
 
 }

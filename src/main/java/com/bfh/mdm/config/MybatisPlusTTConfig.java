@@ -8,14 +8,26 @@ import com.baomidou.mybatisplus.extension.spring.MybatisSqlSessionFactoryBean;
 import org.apache.ibatis.session.SqlSessionFactory;
 import org.apache.ibatis.type.JdbcType;
 import org.mybatis.spring.annotation.MapperScan;
+import org.springframework.aop.Advisor;
+import org.springframework.aop.aspectj.AspectJExpressionPointcut;
+import org.springframework.aop.support.DefaultPointcutAdvisor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.io.support.PathMatchingResourcePatternResolver;
 import org.springframework.jdbc.datasource.DataSourceTransactionManager;
+import org.springframework.transaction.TransactionDefinition;
+import org.springframework.transaction.interceptor.NameMatchTransactionAttributeSource;
+import org.springframework.transaction.interceptor.RollbackRuleAttribute;
+import org.springframework.transaction.interceptor.RuleBasedTransactionAttribute;
+import org.springframework.transaction.interceptor.TransactionAttribute;
+import org.springframework.transaction.interceptor.TransactionInterceptor;
 
 import javax.sql.DataSource;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
 
 @MapperScan(basePackages = "com.bfh.mdm.mapper.tt", sqlSessionFactoryRef = "sqlSessionFactoryTT")
 @Configuration
@@ -27,11 +39,6 @@ public class MybatisPlusTTConfig {
 
 	@Autowired
 	PaginationInterceptor paginationInterceptor;
-
-	@Bean
-	public DataSourceTransactionManager transactionManagerTT() {
-		return new DataSourceTransactionManager(dataSourceTT);
-	}
 
 	@Bean
 	public SqlSessionFactory sqlSessionFactoryTT() throws Exception {
@@ -61,6 +68,43 @@ public class MybatisPlusTTConfig {
 		sqlSessionFactory.setGlobalConfig(globalConfig);
 
 		return sqlSessionFactory.getObject();
+	}
+
+	@Bean
+	public DataSourceTransactionManager transactionManagerTT() {
+		return new DataSourceTransactionManager(dataSourceTT);
+	}
+
+	@Bean
+	public TransactionInterceptor txAdviceTT() {
+		NameMatchTransactionAttributeSource txAttributeSource = new NameMatchTransactionAttributeSource();
+
+		RuleBasedTransactionAttribute readOnlyTx = new RuleBasedTransactionAttribute();
+		readOnlyTx.setPropagationBehavior(TransactionDefinition.PROPAGATION_NOT_SUPPORTED);
+		readOnlyTx.setReadOnly(true);
+
+		RuleBasedTransactionAttribute requiredTx = new RuleBasedTransactionAttribute();
+		requiredTx.setPropagationBehavior(TransactionDefinition.PROPAGATION_REQUIRED);
+		requiredTx.setRollbackRules(Collections.singletonList(new RollbackRuleAttribute(Exception.class)));
+
+		Map<String, TransactionAttribute> txAttributeMap = new HashMap<>();
+		txAttributeMap.put("*", requiredTx);
+		txAttributeMap.put("get*", readOnlyTx);
+		txAttributeMap.put("find*", readOnlyTx);
+		txAttributeMap.put("query*", readOnlyTx);
+		txAttributeMap.put("count*", readOnlyTx);
+
+		txAttributeSource.setNameMap(txAttributeMap);
+
+		return new TransactionInterceptor(transactionManagerTT(), txAttributeSource);
+	}
+
+	@Bean
+	public Advisor txAdviceAdvisorTT() {
+		AspectJExpressionPointcut pointcut = new AspectJExpressionPointcut();
+		pointcut.setExpression("execution(* com.bfh.mdm.service.tt.*.*(..))");
+
+		return new DefaultPointcutAdvisor(pointcut, txAdviceTT());
 	}
 
 }

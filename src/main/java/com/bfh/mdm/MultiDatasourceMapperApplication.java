@@ -1,8 +1,11 @@
 package com.bfh.mdm;
 
 import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.boot.autoconfigure.transaction.TransactionAutoConfiguration;
 
+@EnableAutoConfiguration(exclude = TransactionAutoConfiguration.class)
 @SpringBootApplication
 public class MultiDatasourceMapperApplication {
 

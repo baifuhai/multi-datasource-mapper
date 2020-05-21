@@ -1,4 +1,4 @@
-package com.bfh.mdm.service;
+package com.bfh.mdm.service.tt2;
 
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.bfh.mdm.entity.tt2.User2Entity;

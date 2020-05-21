@@ -1,5 +1,8 @@
 package com.bfh.mdm.config;
 
+import org.springframework.aop.Advisor;
+import org.springframework.aop.aspectj.AspectJExpressionPointcut;
+import org.springframework.aop.support.DefaultPointcutAdvisor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
@@ -10,8 +13,17 @@ import org.springframework.orm.jpa.JpaTransactionManager;
 import org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean;
 import org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter;
 import org.springframework.transaction.PlatformTransactionManager;
+import org.springframework.transaction.TransactionDefinition;
+import org.springframework.transaction.interceptor.NameMatchTransactionAttributeSource;
+import org.springframework.transaction.interceptor.RollbackRuleAttribute;
+import org.springframework.transaction.interceptor.RuleBasedTransactionAttribute;
+import org.springframework.transaction.interceptor.TransactionAttribute;
+import org.springframework.transaction.interceptor.TransactionInterceptor;
 
 import javax.sql.DataSource;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Properties;
 
 @EnableJpaRepositories(
@@ -28,11 +40,6 @@ public class JpaTT2Config {
 	@Autowired
 	@Qualifier("dataSourceTT2")
 	DataSource dataSourceTT2;
-
-	@Bean
-	public PlatformTransactionManager transactionManagerTT2Jpa() {
-		return new JpaTransactionManager(entityManagerFactoryTT2().getObject());
-	}
 
 	@Bean
 	public LocalContainerEntityManagerFactoryBean entityManagerFactoryTT2() {
@@ -57,5 +64,44 @@ public class JpaTT2Config {
 
 		return entityManagerFactoryBean;
 	}
+
+	@Bean
+	public PlatformTransactionManager transactionManagerTT2Jpa() {
+		return new JpaTransactionManager(entityManagerFactoryTT2().getObject());
+	}
+
+	/*
+	@Bean
+	public TransactionInterceptor txAdviceTT2Jpa() {
+		NameMatchTransactionAttributeSource txAttributeSource = new NameMatchTransactionAttributeSource();
+
+		RuleBasedTransactionAttribute readOnlyTx = new RuleBasedTransactionAttribute();
+		readOnlyTx.setPropagationBehavior(TransactionDefinition.PROPAGATION_NOT_SUPPORTED);
+		readOnlyTx.setReadOnly(true);
+
+		RuleBasedTransactionAttribute requiredTx = new RuleBasedTransactionAttribute();
+		requiredTx.setPropagationBehavior(TransactionDefinition.PROPAGATION_REQUIRED);
+		requiredTx.setRollbackRules(Collections.singletonList(new RollbackRuleAttribute(Exception.class)));
+
+		Map<String, TransactionAttribute> txAttributeMap = new HashMap<>();
+		txAttributeMap.put("*", requiredTx);
+		txAttributeMap.put("get*", readOnlyTx);
+		txAttributeMap.put("find*", readOnlyTx);
+		txAttributeMap.put("query*", readOnlyTx);
+		txAttributeMap.put("count*", readOnlyTx);
+
+		txAttributeSource.setNameMap(txAttributeMap);
+
+		return new TransactionInterceptor(transactionManagerTT2Jpa(), txAttributeSource);
+	}
+
+	@Bean
+	public Advisor txAdviceAdvisorTT2Jpa() {
+		AspectJExpressionPointcut pointcut = new AspectJExpressionPointcut();
+		pointcut.setExpression("execution(* com.bfh.mdm.service.tt2.*.*(..))");
+
+		return new DefaultPointcutAdvisor(pointcut, txAdviceTT2Jpa());
+	}
+	*/
 
 }

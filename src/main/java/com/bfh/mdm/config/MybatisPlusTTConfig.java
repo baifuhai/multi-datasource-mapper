@@ -18,6 +18,8 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.core.io.support.PathMatchingResourcePatternResolver;
 import org.springframework.jdbc.datasource.DataSourceTransactionManager;
 import org.springframework.transaction.TransactionDefinition;
+import org.springframework.transaction.annotation.AnnotationTransactionAttributeSource;
+import org.springframework.transaction.interceptor.CompositeTransactionAttributeSource;
 import org.springframework.transaction.interceptor.NameMatchTransactionAttributeSource;
 import org.springframework.transaction.interceptor.RollbackRuleAttribute;
 import org.springframework.transaction.interceptor.RuleBasedTransactionAttribute;
@@ -96,7 +98,10 @@ public class MybatisPlusTTConfig {
 
 		txAttributeSource.setNameMap(txAttributeMap);
 
-		return new TransactionInterceptor(transactionManagerTT(), txAttributeSource);
+		CompositeTransactionAttributeSource compositeTransactionAttributeSource =
+				new CompositeTransactionAttributeSource(new AnnotationTransactionAttributeSource(), txAttributeSource);
+
+		return new TransactionInterceptor(transactionManagerTT(), compositeTransactionAttributeSource);
 	}
 
 	@Bean

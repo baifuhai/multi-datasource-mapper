@@ -14,6 +14,8 @@ import org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean;
 import org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter;
 import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.TransactionDefinition;
+import org.springframework.transaction.annotation.AnnotationTransactionAttributeSource;
+import org.springframework.transaction.interceptor.CompositeTransactionAttributeSource;
 import org.springframework.transaction.interceptor.NameMatchTransactionAttributeSource;
 import org.springframework.transaction.interceptor.RollbackRuleAttribute;
 import org.springframework.transaction.interceptor.RuleBasedTransactionAttribute;
@@ -92,7 +94,10 @@ public class JpaTT2Config {
 
 		txAttributeSource.setNameMap(txAttributeMap);
 
-		return new TransactionInterceptor(transactionManagerTT2Jpa(), txAttributeSource);
+		CompositeTransactionAttributeSource compositeTransactionAttributeSource =
+				new CompositeTransactionAttributeSource(new AnnotationTransactionAttributeSource(), txAttributeSource);
+
+		return new TransactionInterceptor(transactionManagerTT2Jpa(), compositeTransactionAttributeSource);
 	}
 
 	@Bean

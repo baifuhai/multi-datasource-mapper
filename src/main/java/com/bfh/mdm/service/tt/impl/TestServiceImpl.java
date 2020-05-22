@@ -31,7 +31,10 @@ public class TestServiceImpl implements TestService {
 	@Override
 	public void test01() {
 		{
-			System.out.println(userRepository.findAll());
+			// test01 has TransactionInterceptor(DataSourceTransactionManager)
+			// findAll has TransactionInterceptor(JpaTransactionManager)
+			// only work on different datasource
+			System.out.println(userRepository.findAll());//throw Exception
 		}
 		{
 			System.out.println(user2Repository.findAll());
@@ -52,6 +55,16 @@ public class TestServiceImpl implements TestService {
 
 	@Override
 	public void test02() throws Exception {
+		{
+			UserEntity userEntity = new UserEntity();
+			userEntity.setUserName("a");
+			userRepository.save(userEntity);//throw Exception
+		}
+		{
+			User2Entity user2Entity = new User2Entity();
+			user2Entity.setUserName("b");
+			user2Repository.save(user2Entity);//not rollback
+		}
 		{
 			UserEntity userEntity = new UserEntity();
 			userEntity.setUserName("a");

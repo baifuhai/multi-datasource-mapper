@@ -21,9 +21,9 @@ import javax.persistence.Table;
 @TableName("t_user2")
 @Getter
 @Setter
+@ToString
 @NoArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
-@ToString
 public class User2Entity {
 
 	@Id

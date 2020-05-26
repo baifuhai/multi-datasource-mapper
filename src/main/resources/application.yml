@@ -5,6 +5,7 @@ mybatis-plus:
     cache-enabled: false
     map-underscore-to-camel-case: true
     jdbc-type-for-null: null
+    local-cache-scope: statement
   global-config:
     db-config:
       table-prefix: t_

@@ -1,4 +1,4 @@
-package com.bfh.mdm.service.tt;
+package com.bfh.mdm.service.test;
 
 public interface TestService {
 

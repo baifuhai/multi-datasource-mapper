@@ -1,4 +1,4 @@
-package com.bfh.mdm.service.tt.impl;
+package com.bfh.mdm.service.test.impl;
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.bfh.mdm.entity.tt.UserEntity;
@@ -7,7 +7,9 @@ import com.bfh.mdm.mapper.tt.UserMapper;
 import com.bfh.mdm.mapper.tt2.User2Mapper;
 import com.bfh.mdm.repository.tt.UserRepository;
 import com.bfh.mdm.repository.tt2.User2Repository;
-import com.bfh.mdm.service.tt.TestService;
+import com.bfh.mdm.service.test.TestService;
+import com.bfh.mdm.service.tt.UserService;
+import com.bfh.mdm.service.tt2.User2Service;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -27,6 +29,12 @@ public class TestServiceImpl implements TestService {
 
 	@Autowired
 	User2Mapper user2Mapper;
+
+	@Autowired
+	UserService userService;
+
+	@Autowired
+	User2Service user2Service;
 
 	@Override
 	public void test01() {

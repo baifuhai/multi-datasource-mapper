@@ -5,12 +5,12 @@
 	<!-- 通用查询映射结果 -->
 	<resultMap id="BaseResultMap" type="com.bfh.mdm.entity.tt2.User2Entity">
 		<id column="id" property="id"/>
-		<result column="name" property="name"/>
+		<result column="user_name" property="userName"/>
 	</resultMap>
 
 	<!-- 通用查询结果列 -->
 	<sql id="Base_Column_List">
-		id, name
+		id, user_name
 	</sql>
 
 </mapper>

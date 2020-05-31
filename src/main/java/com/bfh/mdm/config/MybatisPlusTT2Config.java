@@ -5,6 +5,7 @@ import com.baomidou.mybatisplus.core.MybatisConfiguration;
 import com.baomidou.mybatisplus.core.config.GlobalConfig;
 import com.baomidou.mybatisplus.extension.plugins.PaginationInterceptor;
 import com.baomidou.mybatisplus.extension.spring.MybatisSqlSessionFactoryBean;
+import org.apache.ibatis.session.LocalCacheScope;
 import org.apache.ibatis.session.SqlSessionFactory;
 import org.apache.ibatis.type.JdbcType;
 import org.mybatis.spring.annotation.MapperScan;
@@ -55,6 +56,7 @@ public class MybatisPlusTT2Config {
 		configuration.setCacheEnabled(false);
 		configuration.setMapUnderscoreToCamelCase(true);
 		configuration.setJdbcTypeForNull(JdbcType.NULL);
+		configuration.setLocalCacheScope(LocalCacheScope.STATEMENT);
 		sqlSessionFactory.setConfiguration(configuration);
 
 		sqlSessionFactory.setPlugins(paginationInterceptor);

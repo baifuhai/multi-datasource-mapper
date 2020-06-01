@@ -84,7 +84,7 @@ public class MybatisPlusTTConfig {
 		NameMatchTransactionAttributeSource txAttributeSource = new NameMatchTransactionAttributeSource();
 
 		RuleBasedTransactionAttribute readOnlyTx = new RuleBasedTransactionAttribute();
-		readOnlyTx.setPropagationBehavior(TransactionDefinition.PROPAGATION_NOT_SUPPORTED);
+		readOnlyTx.setPropagationBehavior(TransactionDefinition.PROPAGATION_REQUIRES_NEW);
 		readOnlyTx.setReadOnly(true);
 
 		RuleBasedTransactionAttribute requiredTx = new RuleBasedTransactionAttribute();
